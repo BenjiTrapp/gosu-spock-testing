@@ -1,4 +1,4 @@
-package de.benjitrapp.test.gosu
+package de.benjitrapp
 
 class HelloWorld {
   function helloWorld(name : String) : String {

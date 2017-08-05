@@ -1,21 +1,29 @@
+group 'selenium-gradle'
+version '1.0-SNAPSHOT'
+
+plugins {
+    id 'org.gosu-lang.gosu' version '0.2.2'
+}
+
 apply from: "libraries.gradle"
+apply plugin: "org.gosu-lang.gosu"
+apply plugin: 'groovy'
+apply plugin: 'idea'
 
-allprojects {
-  repositories {
+
+repositories {
+    mavenLocal()
     mavenCentral()
-  }
-
-  apply plugin: 'groovy'
-
-  idea {
-    module {
-      inheritOutputDirs = false
-      outputDir = file('../modules/configuration/build/idea/classes')
-      testOutputDir = file('../modules/configuration/build/classes/test')
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/' //for Gosu snapshot builds
     }
-  }
+    jcenter()
+}
 
-  dependencies {
+dependencies {
+    // dependencies for gosu-lang
+    compile libs.gosu
+
     // mandatory dependencies for using Spock
     compile libs.groovy
     compile libs.spock
@@ -24,20 +32,87 @@ allprojects {
     testRuntime libs.spockreports
 
     // mocking stuff
-    compile libs.cglib
+    //compile libs.cglib
     testRuntime libs.bytebuddy  // allows mocking of classes (in addition to interfaces)
     testRuntime libs.objenesis  // allows mocking of classes without default constructor (together with CGLIB)
 
     // optional dependencies for using Spock
     testCompile libs.hamcrest   // only necessary if Hamcrest matchers are used
-  }
 
-  sourceSets {
-    test {
-      groovy {
-        srcDirs = ['src/test/java']
-      }
+    // Drivers
+    testCompile "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
+    testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
+    // using a custom version of phantomjs driver for now as the original one does not support WebDriver > 2.43.1
+    testCompile("com.codeborne:phantomjsdriver:1.4.3") {
+        // phantomjs driver pulls in a different selenium version
+        transitive = false
     }
-  }
+}
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/",
+            url "http://m2repo.spockframework.org/snapshots"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.org.gosu-lang.gosu:gradle-gosu-plugin:0.3.4"
+    }
+}
+
+
+drivers.each { driver ->
+    task "${driver}Test"(type: Test) {
+        reports {
+            html.destination = reporting.file("$name/tests")
+            junitXml.destination = file("$buildDir/test-results/$name")
+        }
+
+        outputs.upToDateWhen { false }  // Always run tests
+
+        systemProperty "geb.build.reportsDir", reporting.file("$name/geb")
+        systemProperty "geb.env", driver
+
+        // If you wanted to set the baseUrl in your build…
+        // systemProperty "geb.build.baseUrl", "http://myapp.com"
+    }
+}
+
+task firefoxTest {
+    dependsOn unzipGeckoDriver
+    def geckodriverFilename = Os.isFamily(Os.FAMILY_WINDOWS) ? "geckodriver.exe" : "geckodriver"
+    def geckodriverFile = new File(unzipGeckoDriver.outputs.files.singleFile, geckodriverFilename)
+    systemProperty "webdriver.gecko.driver", geckodriverFile.absolutePath
+}
+
+task chromeTest {
+    dependsOn unzipChromeDriver
+
+    def chromedriverFilename = Os.isFamily(Os.FAMILY_WINDOWS) ? "chromedriver.exe" : "chromedriver"
+    systemProperty "webdriver.chrome.driver", new File(unzipChromeDriver.outputs.files.singleFile, chromedriverFilename).absolutePath
+}
+
+task phantomJsTest {
+    dependsOn unzipPhantomJs
+
+    def phantomJsFilename = Os.isFamily(Os.FAMILY_WINDOWS) ? "phantomjs.exe" : "bin/phantomjs"
+    systemProperty "phantomjs.binary.path", new File(unzipPhantomJs.outputs.files.singleFile, phantomJsFilename).absolutePath
+}
+
+task gebTest {
+    dependsOn drivers.collect { tasks["${it}Test"] }
+    enabled = false
+}
+
+
+
+
+sourceSets {
+    test {
+        groovy {
+            srcDirs = ['src/test/java']
+        }
+    }
 }
 

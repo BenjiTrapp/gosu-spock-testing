@@ -1,7 +1,5 @@
-package de.benjitrapp.test.gosu
-
-import org.junit.Test
-import org.junit.runner.RunWith
+import de.benjitrapp.test.gosu.HelloWorld
+import de.benjitrapp.MockMe
 import spock.lang.Specification
 /**
  * CAUTION: This class is still under construction to evaluate mocking frameworks in combination with

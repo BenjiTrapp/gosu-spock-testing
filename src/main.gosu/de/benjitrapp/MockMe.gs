@@ -1,4 +1,4 @@
-package de.benjitrapp.test.gosu
+package de.benjitrapp
 
 /**
  * CAUTION: This class is completely useless and used for understanding how to mock GOSU classes

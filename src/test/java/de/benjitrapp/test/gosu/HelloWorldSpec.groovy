@@ -1,5 +1,5 @@
-package de.benjitrapp.test.gosu
-
+import de.benjitrapp.test.gosu.HelloWorld
+import de.benjitrapp.MockMe
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -25,7 +25,6 @@ class HelloWorldSpec extends Specification {
 
     where:
     expectedResult || name
-    "Hallo Eric"   || "Hallo Eric"
     "Hello World"  || "Hello World"
     null           || null
     "Hello"        || "hello" //This test is assumed to fail! Do not change it :-)
