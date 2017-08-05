@@ -1,0 +1,62 @@
+project.ext {
+  groovyVersion = "2.4.9"
+  spockVersion = "spock-core:1.1-groovy-2.4"
+  spockReportsVersion = "1.2.12"
+  bytebuddyVersion = "1.6.5"
+  objenesisVersion = "2.5.1"
+  cglibVersion = "2.2'"
+
+  gebVersion = '1.1.1'
+  seleniumVersion = '3.4.0'
+  chromeDriverVersion = '2.29'
+  geckoDriverVersion = '0.16.1'
+  phantomJsVersion = '2.1.1'
+
+  //optional
+  hamcrestVersion = "1.3"
+  okhttpVersion = "3.8.1"
+  jsoupVersion = "1.10.3"
+
+  libs = [
+      /* mendatory for spock */
+      groovy          : "org.codehaus.groovy:groovy-all:${groovyVersion}",
+      spock           : "org.spockframework:${spockVersion}",
+
+      /* needed for mocking with spock*/
+      objenesis       : "org.objenesis:objenesis:${objenesisVersion}",  // allows mocking of classes without default constructor (together with CGLIB)
+      cglib           : "cglib:cglib-nodep:${cglibVersion}",
+      bytebuddy       : "net.bytebuddy:byte-buddy:${bytebuddyVersion}",
+      spockreports    : "com.athaydes:spock-reports:${spockReportsVersion}",
+
+      /*Selenium/geb UI Stuff*/
+      geb             : "org.gebish:geb-spock:${gebVersion}",
+      //Drivers
+      chromeDriver    : "org.seleniumhq.selenium:selenium-chrome-driver:${seleniumVersion}",
+      firefoxDriver   : "org.seleniumhq.selenium:selenium-firefox-driver:${seleniumVersion}",
+      phantomjsDriver : "com.codeborne:phantomjsdriver:${phantomJsVersion}",
+
+      /* Stuff for HTML parsing, retrieval and testing*/
+      okhttpclient    : "com.squareup.okhttp3:okhttp:${okhttpVersion}",   // HTTP Client for health checks or other fancy stuff
+      jsoup           : "org.jsoup:jsoup:${jsoupVersion}",                // HTML-Parser for extracting and manipulating data, using the best of DOM, CSS and ...
+      /* optional */
+      hamcrest        : "org.hamcrest:hamcrest-core:${hamcrestVersion}"   // only necessary if Hamcrest matchers are used
+  ]
+
+  project.ext.collectLibs = {
+    def result = []
+    project.ext.libs.each {
+      result.add(it.value)
+    }
+    return result
+  }
+
+  project.ext.collectLibsAsMap = {
+    def result = [:]
+    project.ext.libs.each {
+      def lib = it.value.split(':')
+      result.put(lib[1], [lib[0], lib[2]]) // e.g. ['jetty': ['org.mortbay.jetty' '6.1.25']]
+    }
+    return result
+  }
+
+}

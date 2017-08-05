@@ -1,0 +1,43 @@
+apply from: "libraries.gradle"
+
+allprojects {
+  repositories {
+    mavenCentral()
+  }
+
+  apply plugin: 'groovy'
+
+  idea {
+    module {
+      inheritOutputDirs = false
+      outputDir = file('../modules/configuration/build/idea/classes')
+      testOutputDir = file('../modules/configuration/build/classes/test')
+    }
+  }
+
+  dependencies {
+    // mandatory dependencies for using Spock
+    compile libs.groovy
+    compile libs.spock
+    testCompile libs.spock
+    testCompile files('plugins/Gosu/gclasses')
+    testRuntime libs.spockreports
+
+    // mocking stuff
+    compile libs.cglib
+    testRuntime libs.bytebuddy  // allows mocking of classes (in addition to interfaces)
+    testRuntime libs.objenesis  // allows mocking of classes without default constructor (together with CGLIB)
+
+    // optional dependencies for using Spock
+    testCompile libs.hamcrest   // only necessary if Hamcrest matchers are used
+  }
+
+  sourceSets {
+    test {
+      groovy {
+        srcDirs = ['src/test/java']
+      }
+    }
+  }
+}
+
