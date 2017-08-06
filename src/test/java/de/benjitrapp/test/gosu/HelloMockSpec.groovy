@@ -1,4 +1,4 @@
-import de.benjitrapp.test.gosu.HelloWorld
+import de.benjitrapp.HelloWorld
 import de.benjitrapp.MockMe
 import spock.lang.Specification
 /**

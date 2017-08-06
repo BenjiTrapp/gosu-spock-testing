@@ -1,6 +1,6 @@
 project.ext {
     gradleVersion = "4.0.2"
-    groovyVersion = "2.4.9"
+    groovyVersion = "2.4.11"
     gosuVersion = "1.14.3"
 
     spockVersion = "1.1-groovy-2.4"
