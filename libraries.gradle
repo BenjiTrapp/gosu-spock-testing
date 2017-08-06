@@ -1,5 +1,4 @@
 project.ext {
-    gradleVersion = "4.0.2"
     groovyVersion = "2.4.11"
     gosuVersion = "1.14.5"
     gosuPluginVersion = "0.3.4"
