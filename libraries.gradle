@@ -1,7 +1,8 @@
 project.ext {
     gradleVersion = "4.0.2"
     groovyVersion = "2.4.11"
-    gosuVersion = "1.14.3"
+    gosuVersion = "1.14.5"
+    gosuPluginVersion = "0.3.4"
 
     spockVersion = "1.1-groovy-2.4"
     spockReportsVersion = "1.2.12"
@@ -24,6 +25,7 @@ project.ext {
             /* mendatory for spock */
             groovy         : "org.codehaus.groovy:groovy-all:${groovyVersion}",
             gosu           : "org.gosu-lang.gosu:gosu-core-api:${gosuVersion}",
+            gosuPlugin     : "gradle.plugin.org.gosu-lang.gosu:gradle-gosu-plugin:${gosuPluginVersion}",
             spock          : "org.spockframework:spock-core:${spockVersion}",
 
             /* needed for mocking with spock*/
